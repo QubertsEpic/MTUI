@@ -1,0 +1,16 @@
+C:\Users\matth\source\repos\MTUI\MTUI\bin\Debug\net5.0\MTUI.exe
+C:\Users\matth\source\repos\MTUI\MTUI\bin\Debug\net5.0\MTUI.deps.json
+C:\Users\matth\source\repos\MTUI\MTUI\bin\Debug\net5.0\MTUI.runtimeconfig.json
+C:\Users\matth\source\repos\MTUI\MTUI\bin\Debug\net5.0\MTUI.runtimeconfig.dev.json
+C:\Users\matth\source\repos\MTUI\MTUI\bin\Debug\net5.0\MTUI.dll
+C:\Users\matth\source\repos\MTUI\MTUI\bin\Debug\net5.0\ref\MTUI.dll
+C:\Users\matth\source\repos\MTUI\MTUI\bin\Debug\net5.0\MTUI.pdb
+C:\Users\matth\source\repos\MTUI\MTUI\obj\Debug\net5.0\MTUI.csproj.AssemblyReference.cache
+C:\Users\matth\source\repos\MTUI\MTUI\obj\Debug\net5.0\MTUI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\matth\source\repos\MTUI\MTUI\obj\Debug\net5.0\MTUI.AssemblyInfoInputs.cache
+C:\Users\matth\source\repos\MTUI\MTUI\obj\Debug\net5.0\MTUI.AssemblyInfo.cs
+C:\Users\matth\source\repos\MTUI\MTUI\obj\Debug\net5.0\MTUI.csproj.CoreCompileInputs.cache
+C:\Users\matth\source\repos\MTUI\MTUI\obj\Debug\net5.0\MTUI.dll
+C:\Users\matth\source\repos\MTUI\MTUI\obj\Debug\net5.0\ref\MTUI.dll
+C:\Users\matth\source\repos\MTUI\MTUI\obj\Debug\net5.0\MTUI.pdb
+C:\Users\matth\source\repos\MTUI\MTUI\obj\Debug\net5.0\MTUI.genruntimeconfig.cache
