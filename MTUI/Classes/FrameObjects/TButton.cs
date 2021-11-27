@@ -1,4 +1,6 @@
-﻿using MTUI.Classes.Vector;
+﻿using MTUI.Classes.Buffer;
+using MTUI.Classes.Data.P_invoke;
+using MTUI.Classes.Vector;
 using MTUI.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,33 +12,33 @@ namespace MTUI.Classes.FrameObjects
 {
     public class TButton : FrameObject
     {
-        public VectorI2 Location { get; set; }
+        public Vector<int> Location { get; set; }
         public int Layer { get; set; }
         public bool Selected { get; set; }
 
         public TLabel Label;
-        public TButton(string text, VectorI2 location)
+        public TButton(string text, Vector<int> location)
         {
-            Label = new TLabel(text, new VectorI2(0, 0));
+            Label = new TLabel(text, new Vector<int>(0, 0));
             Location = location ?? throw new NullReferenceException("Location cannot be null");
             Layer = 0;
             Selected = false;
         }
 
-        public char[,] Compose()
+        public Buffer<CharInfo> Compose()
         {
             if (Label == null || Location == null || Layer < 0)
                 throw new InvalidOperationException("Cannot compose object when parameters and not correctly set.");
-           char[,] labelBuffer = Label.Compose();
+            Buffer<CharInfo> labelBuffer = Label.Compose();
 
             if (labelBuffer == null)
                 throw new NullReferenceException("Cannot compose while label buffer is null");
-            char[,] finBuffer = new char[1, labelBuffer.GetLength(1) + 2];
+            Buffer<CharInfo> finBuffer = new Buffer<CharInfo>(new Vector.Vector<int>(1, labelBuffer.GetLength(1) + 2), new CharInfo() { Atrributes = (int) BufferAttributes.ForegroundWhite, Char = new CharUnion() { UnicodeChar = ' '} });
 
-            finBuffer[0, 0] = '[';
-            finBuffer[0, finBuffer.GetLength(1) - 1] = ']';
+            finBuffer.bufferArray[finBuffer.ConvertTo1D(0, 0)].Char.UnicodeChar = '[';
+            finBuffer.bufferArray[finBuffer.ConvertTo1D(0, finBuffer.GetLength(1) - 1)].Char.UnicodeChar = ']';
 
-            Compositor.Transpose(ref finBuffer, labelBuffer, new VectorI2(1,0));
+            finBuffer.Transpose(labelBuffer, new Vector<int>(1, 0));
 
             return finBuffer;
         }

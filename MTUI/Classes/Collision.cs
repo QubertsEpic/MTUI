@@ -9,7 +9,7 @@ namespace MTUI.Classes
 {
     public static class Collision
     {
-        public static bool Intersection(Vector.VectorI2 location, Vector.VectorI2 boxStartingPoint, Vector.VectorI2 boxEndingPoint)
+        public static bool Intersection(Vector.Vector<int> location, Vector.Vector<int> boxStartingPoint, Vector.Vector<int> boxEndingPoint)
         {
             //Makes sure that all of the variables are valid.
             if (location == null || boxStartingPoint == null || boxEndingPoint == null)

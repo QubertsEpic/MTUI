@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static MTUI.ConsoleInstance;
+using MTUI.Classes.Data.P_invoke;
 
 namespace MTUI.Classes.Nums
 {
@@ -28,7 +28,7 @@ namespace MTUI.Classes.Nums
         }
 
 
-        public static void MakeLines(ref CharInfo[] info, Vector.VectorI2 size)
+        public static void MakeLines(ref CharInfo[] info, Vector.Vector<int> size)
         {
             if (info == null)
                 return;
@@ -44,7 +44,7 @@ namespace MTUI.Classes.Nums
             }
         }
 
-        public static void MakeFrame(ref CharInfo[] info, Vector.VectorI2 size)
+        public static void MakeFrame(ref CharInfo[] info, Vector.Vector<int> size)
         {
 
             info[0].Char.UnicodeChar = '┌';
@@ -55,13 +55,13 @@ namespace MTUI.Classes.Nums
 
         public CharInfo[] Draw()
         {
-            CharInfo[] buffer = BufferOperations.CreateBuffer((UInt32) (Bottom*Right), ' ', BufferAttributes.ForegroundWhite);
+            CharInfo[] buffer = new CharInfo[4 * 4]; //BufferOperations.CreateBuffer((UInt32) (Bottom*Right), ' ', BufferAttributes.ForegroundWhite);
             MakeLines(ref buffer, GetSize());
             MakeFrame(ref buffer, GetSize());
             return buffer;
         }
 
-        public Vector.VectorI2 GetSize() => new Vector.VectorI2(Right, Bottom);
+        public Vector.Vector<int> GetSize() => new Vector.Vector<int>(Right, Bottom);
 
         private bool CheckAllValues()
         {

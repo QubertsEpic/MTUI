@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace MTUI.Classes.Vector
 {
-    public class VectorI2
+    public class Vector<T>
     {
-        public int X;
-        public int Y;
-        public VectorI2(int x, int y)
+        public T X;
+        public T Y;
+        public Vector(T x, T y)
         {
             X = x;
             Y = y;
         }
 
-        public VectorI2(int x)
+        public Vector(T x)
         {
             X = x;
-            Y = int.MinValue;
+            Y = default(T);
         }
     }
 }

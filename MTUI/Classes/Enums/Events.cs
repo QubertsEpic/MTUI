@@ -16,9 +16,9 @@ namespace MTUI.Classes.Enums
 
     public class MouseMoved : EventArgs
     {
-        public Vector.VectorI2 NewMousePosition;
+        public Vector.Vector<int> NewMousePosition;
 
-        public MouseMoved(Vector.VectorI2 NewPosition) 
+        public MouseMoved(Vector.Vector<int> NewPosition) 
         {
             NewMousePosition = NewPosition;
         }

@@ -58,14 +58,14 @@ namespace MTUI.Classes
             Window = GetConsoleWindow(); 
         }
 
-        public void CalculateCorrection()
+        public void CalculateCorrection(Vector.Vector<int> bufferSize)
         {
             UpdatePosition(false);
             
-            CursorCorrections = new Vector.VectorF2((WindowRectangle.Right-WindowRectangle.Left)/ConsoleInstance.ConsoleWidth ,(WindowRectangle.Bottom - WindowRectangle.Top)/ConsoleInstance.ConsoleHeight);
+            CursorCorrections = new Vector.VectorF2((WindowRectangle.Right-WindowRectangle.Left)/bufferSize.X ,(WindowRectangle.Bottom - WindowRectangle.Top)/bufferSize.Y);
         }
 
-        public Vector.VectorI2 UpdatePosition(bool ChangeCursorPosition = true)
+        public Vector.Vector<int> UpdatePosition(bool ChangeCursorPosition = true)
         {
             GetCursorPos(out CursorPosition);
             GetWindowRect(Window, ref WindowRectangle);
@@ -75,11 +75,11 @@ namespace MTUI.Classes
             return null;
         }
 
-        public Vector.VectorI2 CurrentCursorPosition()
+        public Vector.Vector<int> CurrentCursorPosition()
         { 
             if (CursorCorrections == null)
                return null;
-            return new Vector.VectorI2((int) ((CursorPosition.x - WindowRectangle.Left) / CursorCorrections.X)-1, (int) ((CursorPosition.y - WindowRectangle.Top) / CursorCorrections.Y-2));
+            return new Vector.Vector<int>((int) ((CursorPosition.x - WindowRectangle.Left) / CursorCorrections.X)-1, (int) ((CursorPosition.y - WindowRectangle.Top) / CursorCorrections.Y-2));
         }
     }
 }

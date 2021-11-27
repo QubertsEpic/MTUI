@@ -1,8 +1,10 @@
 ﻿using MTUI.Classes;
+using MTUI.Classes.Buffer;
 using MTUI.Classes.Vector;
 using MTUI.Interfaces;
 using System;
 using System.Collections.Generic;
+using MTUI.Classes.Data.P_invoke;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
@@ -12,16 +14,14 @@ namespace MTUI.Classes
 {
     public class TWindowContent
     {
-        public VectorI2 Size;
+        public Vector<int> Size;
         public ObservableCollection<FrameObject> FrameObjects;
         public string FrameTitle = "Frame";
         public int CurrentlySelectedObject;
         public State CurrentState;
-        public TWindowContent(VectorI2 size) 
+        public TWindowContent(Vector<int> size) 
         {
             Size = size ?? throw new NullReferenceException("Size not found.");
-            if (Size.Y > ConsoleInstance.ConsoleHeight - 2 || Size.X > ConsoleInstance.ConsoleWidth - 2)
-                throw new IndexOutOfRangeException("Cannot display window larger than the available space.");
             CurrentState = State.Dorment;
             CurrentlySelectedObject = -1;
         }
@@ -43,31 +43,29 @@ namespace MTUI.Classes
             if (FrameObjects == null)
             {
                 FrameObjects = new ObservableCollection<FrameObject>();
-                ConsoleInstance.LogClient.Write("Error: Frameobjects not initialised.");
             }
             if (frameObject.Location == null)
             {
-                ConsoleInstance.LogClient.Write("Error: FrameObject has no location to place. Infringement of location ruleset upon initialisation.");
                 return;
             }
             FrameObjects.Add(frameObject);
         }
 
-        public char[,] Composite()
+        public Buffer<CharInfo> Composite()
         {
             if (FrameObjects == null)
-                return new char[0, 0];
+                return new Buffer<CharInfo>();
             if (FrameObjects.Count < 1)
-                return new char[0, 0];
-            char[,] buffer = new char[0,0];
-            Compositor.ResetBuffer(ref buffer, ' ', new VectorI2(Size.X, Size.Y));
-            int allocatedSpace = (int)Size.Y / FrameObjects.Count;
-            for(int i = 0; i < FrameObjects.Count; i++)
+                return new Buffer<CharInfo>();
+            Buffer<CharInfo> buffer = new Buffer<CharInfo>(Size, new CharInfo() { Atrributes =(int) BufferAttributes.ForegroundWhite, Char = new CharUnion() { UnicodeChar = ' ' } });
+            for (int i = 0; i < FrameObjects.Count; i++)
             {
                 if (FrameObjects[i].Location == null)
                     continue;
-                char[,] objectBuffer = FrameObjects[i].Compose();
-                Compositor.Transpose(ref buffer, objectBuffer, FrameObjects[i].Location);
+                Buffer<CharInfo> objectBuffer = FrameObjects[i].Compose();
+                if (objectBuffer == null)
+                    throw new NullReferenceException("Cannot use null buffer.");
+                buffer.Transpose(objectBuffer, FrameObjects[i].Location);
             }
             return buffer;
         }
@@ -76,13 +74,11 @@ namespace MTUI.Classes
         {
             if(buffer == null || objectBuffer == null || location == null)
             {
-                ConsoleInstance.LogClient.Write("Error: Cannot allign without all parameters. ");
                 return;
             }
 
             if(objectBuffer.GetLength(0) > buffer.GetLength(0) || objectBuffer.GetLength(1) > buffer.GetLength(1))
             {
-                ConsoleInstance.LogClient.Write("Error: Object Buffer is larger than Window Buffer. ");
                 return;
             }  
             
