@@ -1,6 +1,7 @@
 ﻿using MTUI.Classes;
 using MTUI.Classes.FrameObjects;
 using MTUI.Classes.Vector;
+using System.Threading;
 
 namespace MTUI
 {
@@ -29,6 +30,12 @@ namespace MTUI
             instance.Frames.Add(frame3);
 
             instance.Init();
+
+            while (true)
+            {
+                instance.Frames[0].Location = instance.CursorPosition ?? new Vector<int>(1,1);
+                Thread.Sleep(10);
+            }
         }
     }
 }

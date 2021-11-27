@@ -12,14 +12,14 @@ namespace MTUI.Classes.Buffer
         private Vector.Vector<int> size;
         public Buffer()
         {
-            size = new Vector.Vector<int>(0,0);
+            size = new Vector.Vector<int>(0, 0);
             bufferArray = new T[0];
         }
 
         public Buffer(Vector.Vector<int> bufferSize, T[] buffer)
         {
             bufferArray = buffer;
-            if(bufferArray == null)
+            if (bufferArray == null)
             {
                 throw new NullReferenceException("Cannot have empty buffer!");
             }
@@ -28,15 +28,15 @@ namespace MTUI.Classes.Buffer
 
         public Buffer(Vector.Vector<int> bufferSize, T standardValue)
         {
-            bufferArray = BufferOperations.CreateBuffer((UInt32) (bufferSize.Y*bufferSize.X), standardValue);
-            if(bufferArray == null)
+            bufferArray = BufferOperations.CreateBuffer((UInt32)(bufferSize.Y * bufferSize.X), standardValue);
+            if (bufferArray == null)
             {
                 throw new NullReferenceException("Buffer creation returned null.");
             }
             size = bufferSize;
         }
 
-        public int ConvertTo1D(int x, int y) => (size.X * y) + x;    
+        public int ConvertTo1D(int x, int y) => (size.X * y) + x;
 
         public T this[int index]
         {
@@ -71,7 +71,7 @@ namespace MTUI.Classes.Buffer
         {
             if (objects == null)
                 return false;
-            for(int i = 0; i < objects.Count; i++)
+            for (int i = 0; i < objects.Count; i++)
             {
                 if (objects[i] == null)
                     return true;
@@ -81,16 +81,16 @@ namespace MTUI.Classes.Buffer
 
         public bool Transpose(Buffer<T> toTranspose, Vector.Vector<int> offset)
         {
-            if(CheckNull(new List<object>()
+            if (CheckNull(new List<object>()
             {
                 bufferArray, toTranspose
             }))
             {
                 throw new NullReferenceException("Cannot transpose when null values are present.");
             }
-            for(int i = 0; i < toTranspose.GetSize().X; i++)
+            for (int i = 0; i < toTranspose.GetSize().X; i++)
             {
-                for(int j = 0; j < toTranspose.GetSize().Y; j++)
+                for (int j = 0; j < toTranspose.GetSize().Y; j++)
                 {
                     SetValue(i + offset.X, j + offset.Y, toTranspose.GetValue(i, j));
                 }

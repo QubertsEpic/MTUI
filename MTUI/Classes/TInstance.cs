@@ -18,10 +18,10 @@ namespace MTUI.Classes
     public class TInstance
     {
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        public static extern bool WriteConsoleOutputW(SafeFileHandle hConsoleOutput, CharInfo[] lpBuffer, ShortCoord dwBufferSize, ShortCoord dwBufferCoord, ref WindowRect lpWriteRegion);
+        private static extern bool WriteConsoleOutputW(SafeFileHandle hConsoleOutput, CharInfo[] lpBuffer, ShortCoord dwBufferSize, ShortCoord dwBufferCoord, ref WindowRect lpWriteRegion);
 
         [DllImport("Kernel32.dll")]
-        public static extern SafeFileHandle GetStdHandle(int nStdHandle);
+        private static extern SafeFileHandle GetStdHandle(int nStdHandle);
 
         public CharInfo[] StandardBuffer;
 
