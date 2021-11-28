@@ -14,13 +14,13 @@ namespace MTUI.Classes.FrameObjects
         public bool Selected { get; set; }
 
         public string Text;
-        public ConsoleColor Foreground, Background;
-        public TLabel(string text, Vector<int> location, ConsoleColor foregroundColour = ConsoleColor.White, ConsoleColor backgroundColour = ConsoleColor.Black)
+        public BufferAttributes foregroundColor, backgroundColor;
+        public TLabel(string text, Vector<int> location, BufferAttributes foregroundColor = BufferAttributes.ForegroundWhite, BufferAttributes backgroundColor = BufferAttributes.BackgroundBlack)
         {
             Location = location ?? new Vector<int>(0,0);
             Text = text;
-            Foreground = foregroundColour;
-            Background = backgroundColour;
+            this.foregroundColor = foregroundColor;
+            this.backgroundColor = backgroundColor;
         }
 
         //Todo: allow for mutli line labels. This system isn't good enough.
@@ -28,7 +28,7 @@ namespace MTUI.Classes.FrameObjects
         {
             if (string.IsNullOrWhiteSpace(Text))
                 return new Buffer<CharInfo>(new Vector.Vector<int>(0, 0), new CharInfo());
-            Buffer<CharInfo> characters = new Buffer<CharInfo>(new Vector<int>(Text.Length, 1), new CharInfo() { Char = new CharUnion() { UnicodeChar = ' ' }, Atrributes = (int) BufferAttributes.ForegroundWhite });
+            Buffer<CharInfo> characters = new Buffer<CharInfo>(new Vector<int>(Text.Length, 1), new CharInfo() { Char = new CharUnion() { UnicodeChar = ' ' }, Atrributes = BufferAttributeOperations.Concatinate(new[] { foregroundColor, backgroundColor })});
             for (int i = 0; i < Text.Length; i++)
             {
                 characters.bufferArray[i].Char.UnicodeChar = Text[i];

@@ -28,9 +28,6 @@ namespace MTUI.Classes
         [DllImport("user32.dll")]
         private static extern bool GetWindowRect(IntPtr hWnd, ref Rect lpRect);
 
-        [DllImport("user32.dll")]
-        private static extern IntPtr FindWindowA(in string lpClassName, in string lpWindowName);
-
         /// <summary>
         /// Gets the current console instance.
         /// </summary>
@@ -46,6 +43,9 @@ namespace MTUI.Classes
         [DllImport("user32.dll")]
         public static extern bool GetCursorPos(out POINT lpPoint);
 
+        [DllImport("user32.dll")]
+        public static extern bool SetCursorPos(int x, int y);
+
         private static IntPtr Window;
         private static Rect WindowRectangle = new Rect();
         private static POINT CursorPosition = new POINT();
@@ -57,7 +57,7 @@ namespace MTUI.Classes
             Alive = true;
             Window = GetConsoleWindow(); 
         }
-
+        
         public void CalculateCorrection(Vector.Vector<int> bufferSize)
         {
             UpdatePosition(false);

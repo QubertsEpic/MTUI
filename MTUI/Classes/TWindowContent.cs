@@ -15,7 +15,6 @@ namespace MTUI.Classes
     public class TWindowContent
     {
         public Vector<int> Size;
-        public ObservableCollection<FrameObject> FrameObjects;
         public string FrameTitle = "Frame";
         public int CurrentlySelectedObject;
         public State CurrentState;
@@ -25,33 +24,20 @@ namespace MTUI.Classes
             CurrentState = State.Dorment;
             CurrentlySelectedObject = -1;
         }
-
+        /*
         public void ChangeCurrentlySelectedObject(int objectSelected)
         {
             if (objectSelected > FrameObjects.Count || objectSelected < -1)
                 return;
             CurrentlySelectedObject = objectSelected;
-        }
+        }*/
 
         public void ChangeState(State state)
         {
             CurrentState = state;
         }
 
-        public void AddObject(FrameObject frameObject)
-        {
-            if (FrameObjects == null)
-            {
-                FrameObjects = new ObservableCollection<FrameObject>();
-            }
-            if (frameObject.Location == null)
-            {
-                return;
-            }
-            FrameObjects.Add(frameObject);
-        }
-
-        public Buffer<CharInfo> Composite()
+        public Buffer<CharInfo> Composite(ObservableCollection<FrameObject> FrameObjects)
         {
             if (FrameObjects == null)
                 return new Buffer<CharInfo>();

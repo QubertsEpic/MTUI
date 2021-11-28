@@ -33,10 +33,10 @@ namespace MTUI.Classes.FrameObjects
 
             if (labelBuffer == null)
                 throw new NullReferenceException("Cannot compose while label buffer is null");
-            Buffer<CharInfo> finBuffer = new Buffer<CharInfo>(new Vector.Vector<int>(1, labelBuffer.GetLength(1) + 2), new CharInfo() { Atrributes = (int) BufferAttributes.ForegroundWhite, Char = new CharUnion() { UnicodeChar = ' '} });
+            Buffer<CharInfo> finBuffer = new Buffer<CharInfo>(new Vector.Vector<int>(labelBuffer.GetLength(0) + 2, 1), new CharInfo() { Atrributes = (int) BufferAttributes.ForegroundWhite, Char = new CharUnion() { UnicodeChar = ' '} });
 
             finBuffer.bufferArray[finBuffer.ConvertTo1D(0, 0)].Char.UnicodeChar = '[';
-            finBuffer.bufferArray[finBuffer.ConvertTo1D(0, finBuffer.GetLength(1) - 1)].Char.UnicodeChar = ']';
+            finBuffer.bufferArray[finBuffer.ConvertTo1D(finBuffer.GetLength(0) - 1, 0)].Char.UnicodeChar = ']';
 
             finBuffer.Transpose(labelBuffer, new Vector<int>(1, 0));
 

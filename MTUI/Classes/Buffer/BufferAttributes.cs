@@ -39,6 +39,36 @@ namespace MTUI.Classes.Buffer
         ForegroundYellow = 0x000e,
         ForegroundWhite = 0x000f,
         
-        BackgroundWhite = 0x00f0
+        BackgroundBlack = 0x0000,
+        BackgroundWhite = 0x00f0,
+        BackgroundDarkBlue = 0x0010,
+        BackgroundDarkGreen = 0x0020,
+        BackgroundDarkTurqoise = 0x0030,
+        BackgroundDarkRed = 0x0040,
+        BcakgroundDarkMagenta = 0x0050,
+        BackgroundDarkYellow = 0x0060,
+        BackgroundDarkGray = 0x0070,
+        BackgroundLightGray = 0x0080,
+        BackgroundBlue = 0x0090,
+        BackgroundGreen = 0x00a0,
+        BackgroundTurquoise = 0x00b0,
+        BackgroundRed = 0x00c0,
+        BackgroundMagenta = 0x00d0,
+        BackgroundYellow = 0x00e0
+    }
+
+    public static class BufferAttributeOperations
+    {
+        public static short Concatinate(BufferAttributes[] attributes)
+        {
+            if (attributes == null)
+                return 0;
+            short output = 0;
+            for(int i = 0; i < attributes.Length; i++)
+            {
+                output += (short) attributes[i];
+            }
+            return output;
+        }
     }
 }
