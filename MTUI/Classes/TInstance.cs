@@ -23,7 +23,7 @@ namespace MTUI.Classes
         [DllImport("Kernel32.dll")]
         private static extern SafeFileHandle GetStdHandle(int nStdHandle);
 
-        public CharInfo[] StandardBuffer;
+        public Vector.Vector<int> BufferCorrection;
 
         public Buffer<CharInfo> DrawBuffer;
 
@@ -31,101 +31,155 @@ namespace MTUI.Classes
 
         public List<TWindow> Frames = new List<TWindow>();
 
-        public WindowDisplayType DisplayType;
-
         public Random Random = new Random();
 
         public int CurrentlySelectedLayer;
 
         public Thread DrawThread;
 
+        private string consoleTitle;
+
+        public string ConsoleTitle
+        {
+            get { return consoleTitle; }
+            set
+            {
+                Console.Title = value;
+                consoleTitle = value;
+            }
+        }
+
         public bool Alive;
+
+        public WindowRect rect;
 
         public TCursor Cursor;
         public Vector.Vector<int> ConsoleDimensions, CursorPosition;
 
-        const int FPS = 144;
-        const int frameDelay = 1000 / FPS;
+        private int fps;
+
+        public int FPS
+        {
+            get { return fps; }
+            set
+            {
+                fps = value;
+                frameDelay = 1000 / value;
+            }
+        }
+
+        int frameDelay;
+
+
+
+        public Thread ProcessingThread, UpdatingThread;
         /// <summary>
         /// Tiling currently does not work.
         /// </summary>
         /// <param name="displayType"></param>
-        public TInstance(WindowDisplayType displayType = WindowDisplayType.Normal)
+        public TInstance(int fps)
         {
-            DisplayType = WindowDisplayType.Normal;
             CurrentlySelectedLayer = 0;
             Cursor = new TCursor();
             DrawBuffer = new Buffer<CharInfo>((ConsoleDimensions = new Vector.Vector<int>(Console.WindowWidth, Console.WindowHeight)), new CharInfo() { Char = new CharUnion { UnicodeChar = ' ' } });
+            FPS = fps;
             ResetBuffers();
         }
 
         public void Init()
         {
-            new Thread(Process).Start();
-            new Thread(UpdateScreen).Start();
+            Alive = true;
+            ProcessingThread = new Thread(Process);
+            ProcessingThread.Start();
+            UpdatingThread = new Thread(UpdateScreen);
+            ConsoleTitle = "MTUI Instance";
+            UpdatingThread.Start();
+        }
+
+        /// <summary>
+        /// Stops MTUI from processing and rendering.
+        /// </summary>
+        public void Stop()
+        {
+            Alive = false;
         }
 
         public void AddFrame(TWindow frame)
         {
             if (frame == null)
-                return;
+                throw new NullReferenceException("Cannot add null window.");
             Frames.Add(frame);
+        }
+
+        public void MakeNewFrame(Vector.Vector<int> location, Vector.Vector<int> size = null, Vector.Vector<int> minSize = null, Vector.Vector<int> maxSize = null)
+        {
+            TWindow window = new TWindow(location, size, minSize, maxSize);
+            AddFrame(window);
         }
 
         public void Process()
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
-            long frameTime, frameStart;
-            while (true)
+            while (Alive)
             {
-                frameStart = stopwatch.ElapsedMilliseconds;
+                long frameStart = stopwatch.ElapsedMilliseconds;
                 if (Frames == null)
                 {
                     throw new NullReferenceException("Cannot build image without frames.");
                 }
 
                 //Updates Cursor Position.
-                Cursor.CalculateCorrection(DrawBuffer.GetSize());
+
+                Cursor.CalculateCorrection(new Vector.Vector<int>(DrawBuffer.GetSize().X / 3, DrawBuffer.GetSize().Y / 3));
                 CursorPosition = Cursor.UpdatePosition();
 
                 UpdateCollision(CursorPosition);
 
                 GenerateBuffer();
 
-                var debug = "X: " + CursorPosition.X.ToString() + "ch Y: " + CursorPosition.Y.ToString() + "ch" + " Colliding: " + CurrentlySelectedLayer.ToString();
-                TLabel label = new TLabel(debug, null);
-                DrawBuffer.Transpose(label.Compose(), new Vector.Vector<int>(0, 0));
+                var debug = "X: " + CursorPosition.X.ToString() + "ch Y: " + CursorPosition.Y.ToString() + "ch" + " Colliding: " + CurrentlySelectedLayer.ToString() + " Current FPS: " + FPS;
+                TLabel label = new TLabel(debug, null, foregroundColor: BufferAttributes.ForegroundTurquoise);
+                DrawBuffer.Transpose(label.Compose(), new Vector.Vector<int>(0, ConsoleDimensions.Y - 1), BufferCorrection);
 
                 ResetBuffers();
 
-                frameTime = stopwatch.ElapsedMilliseconds - frameStart;
+                long frameTime = stopwatch.ElapsedMilliseconds - frameStart;
 
-                
-                if(frameDelay > frameTime)
+
+                if (frameDelay > frameTime)
                 {
-                    Thread.Sleep((int) (frameDelay - frameTime));
+                    Thread.Sleep((int)(frameDelay - frameTime));
                 }
             }
         }
 
-        public void ResetBuffers()
+        private void ResetBuffers()
         {
             ReservedBuffer = DrawBuffer;
-            DrawBuffer = new Buffer<CharInfo>((ConsoleDimensions = new Vector.Vector<int>(Console.WindowWidth, Console.WindowHeight)), new CharInfo() { Char = new CharUnion { UnicodeChar = ' ' }, Atrributes = (int) BufferAttributes.ForegroundWhite });
+            ConsoleDimensions = new Vector.Vector<int>(Console.WindowWidth, Console.WindowHeight);
+            DrawBuffer = new Buffer<CharInfo>(new Vector.Vector<int>((ConsoleDimensions.X - 1) * 3, (ConsoleDimensions.Y - 1) * 3), new CharInfo() { Char = new CharUnion { UnicodeChar = '░' }, Atrributes = (int)BufferAttributes.ForegroundRed });
+            BufferCorrection = new Vector<int>(DrawBuffer.GetSize().X / 3, DrawBuffer.GetSize().Y / 3);
+            rect = new WindowRect()
+            {
+                Bottom = (short)ConsoleDimensions.Y,
+                Right = (short)ConsoleDimensions.X
+            };
+            Console.CursorVisible = false;
         }
 
         private void UpdateScreen()
         {
             Stopwatch watch = Stopwatch.StartNew();
             SafeFileHandle handle = GetStdHandle(-11);
-            while (true)
+            while (Alive)
             {
                 long startTime = watch.ElapsedMilliseconds;
-                WindowRect rect = new WindowRect() { Top = 0, Left = 0, Right = (short) ReservedBuffer.GetSize().X, Bottom = (short) ReservedBuffer.GetSize().Y};
-                long endTime;
-                Console.Title = "Output Status: " +  WriteConsoleOutputW(handle, ReservedBuffer.GetBuffer(), new ShortCoord((short)ReservedBuffer.GetSize().X,(short) ReservedBuffer.GetSize().Y), new ShortCoord(0,0), ref rect).ToString() + " FrameTime: " + (endTime = watch.ElapsedMilliseconds - startTime).ToString() + "ms";
-                ;
-                if(endTime < frameDelay)
+                /* Console.Title = "Output Status: " + */
+                WriteConsoleOutputW(handle, ReservedBuffer.GetBuffer(),
+                         new ShortCoord((short)ReservedBuffer.GetSize().X, (short)ReservedBuffer.GetSize().Y),
+                    new ShortCoord((short)(BufferCorrection.X), (short)(BufferCorrection.Y)), ref rect);
+                long endTime = watch.ElapsedMilliseconds - startTime;
+                if (endTime < frameDelay)
                 {
                     Thread.Sleep((int)(frameDelay - endTime));
                 }
@@ -139,13 +193,13 @@ namespace MTUI.Classes
                 if (Frames[i] == null)
                     continue;
                 Buffer<CharInfo> subBuffer = Frames[i].GetBuffer();
-                DrawBuffer.Transpose(subBuffer, Frames[i].Location);
+                DrawBuffer.Transpose(subBuffer, Frames[i].Location, BufferCorrection);
             }
         }
 
         public void UpdateCollision(Vector.Vector<int> position)
         {
-            for(int i = 0; i < Frames.Count; i++)
+            for (int i = 0; i < Frames.Count; i++)
             {
                 if (Collision.Intersection(position, Frames[i].Location, Frames[i].Size))
                 {

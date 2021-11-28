@@ -10,13 +10,15 @@ namespace MTUI.Classes.Buffer
     {
         public T[] bufferArray;
         private Vector.Vector<int> size;
+        private Vector.Vector<int> offset;
         public Buffer()
         {
             size = new Vector.Vector<int>(0, 0);
+            offset = new Vector.Vector<int>(0, 0);
             bufferArray = new T[0];
         }
 
-        public Buffer(Vector.Vector<int> bufferSize, T[] buffer)
+        public Buffer(Vector.Vector<int> bufferSize ,T[] buffer)
         {
             bufferArray = buffer;
             if (bufferArray == null)
@@ -24,9 +26,10 @@ namespace MTUI.Classes.Buffer
                 throw new NullReferenceException("Cannot have empty buffer!");
             }
             size = bufferSize;
+            offset = new Vector.Vector<int>(0, 0);
         }
 
-        public Buffer(Vector.Vector<int> bufferSize, T standardValue)
+        public Buffer(Vector.Vector<int> bufferSize ,T standardValue)
         {
             bufferArray = BufferOperations.CreateBuffer((UInt32)(bufferSize.Y * bufferSize.X), standardValue);
             if (bufferArray == null)
@@ -79,7 +82,7 @@ namespace MTUI.Classes.Buffer
             return false;
         }
 
-        public bool Transpose(Buffer<T> toTranspose, Vector.Vector<int> offset)
+        public bool Transpose(Buffer<T> toTranspose, Vector.Vector<int> offset, Vector.Vector<int> masterOffset = null)
         {
             if (CheckNull(new List<object>()
             {
@@ -88,11 +91,14 @@ namespace MTUI.Classes.Buffer
             {
                 throw new NullReferenceException("Cannot transpose when null values are present.");
             }
+            //Ensures that the offset is not null, and resets it to zero if otherwise.
+            if (masterOffset == null)
+                masterOffset = new Vector.Vector<int>(0,0);
             for (int i = 0; i < toTranspose.GetSize().X; i++)
             {
                 for (int j = 0; j < toTranspose.GetSize().Y; j++)
                 {
-                    SetValue(i + offset.X, j + offset.Y, toTranspose.GetValue(i, j));
+                    SetValue(i + offset.X + masterOffset.X, j + offset.Y + masterOffset.Y, toTranspose.GetValue(i, j));
                 }
             }
             return true;

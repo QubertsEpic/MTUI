@@ -4,6 +4,7 @@ using MTUI.Interfaces;
 using System;
 using MTUI.Classes.Data.P_invoke;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace MTUI.Classes
 {
@@ -15,6 +16,7 @@ namespace MTUI.Classes
         public string FrameText;
         public bool Visible = true, ChangesMade;
         public Buffer<CharInfo>  cachedBuffer;
+        public ObservableCollection<FrameObject> FrameObjects;
         /// <summary>
         /// Any X plane size will be doubled.
         /// </summary>
@@ -32,6 +34,7 @@ namespace MTUI.Classes
             MinSize = new Vector.Vector<int>(2, 1);
             MaxSize = new Vector.Vector<int>(40, 20);
             CursorPosition = new Vector.Vector<int>(-1, -1);
+            FrameObjects = new ObservableCollection<FrameObject>();
             ChangesMade = true;
 
             if (minSize != null)
@@ -109,7 +112,7 @@ namespace MTUI.Classes
         {
             if (objectToAdd == null)
                 throw new NullReferenceException("Cannot add a null windowobject to a window.");
-            WindowContent.AddObject(objectToAdd);
+            FrameObjects.Add(objectToAdd);
         }
 
         private void MakeFrame(ref Buffer<CharInfo> buffer)
@@ -140,7 +143,7 @@ namespace MTUI.Classes
 
             MakeFrame(ref buffer);
 
-            Buffer<CharInfo> content = WindowContent.Composite();
+            Buffer<CharInfo> content = WindowContent.Composite(FrameObjects);
 
             if (content == null)
                 content = new Buffer<CharInfo>(new Vector.Vector<int>(0,0), new CharInfo());
@@ -155,8 +158,8 @@ namespace MTUI.Classes
 
         public Buffer<CharInfo> GetBuffer()
         {
-            if (!ChangesMade)
-                return cachedBuffer;
+            //if (!ChangesMade)
+              //  return cachedBuffer;
             return (cachedBuffer =  MakeBuffer());
         }
     }

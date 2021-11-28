@@ -13,28 +13,24 @@ namespace MTUI
         /// <param name="argss"></param>
         public static void Main(string[] argss)
         {
-            TInstance instance = new TInstance();
-            TWindow frame = new TWindow(new Vector<int>(1, 1), size: new Classes.Vector.Vector<int>(6, 6));
-            TWindow frame1 = new TWindow(new Vector<int>(1, 20), size: new Classes.Vector.Vector<int>(6, 6));
-            TWindow frame2 = new TWindow(new Vector<int>(20, 1), size: new Classes.Vector.Vector<int>(6, 6));
-            TWindow frame3 = new TWindow(new Vector<int>(20, 20), size: new Classes.Vector.Vector<int>(6, 6));
+            //TestInstance.
+            TInstance instance = new TInstance(60);
+            instance.MakeNewFrame(new Vector<int>(0, 0), new Vector<int>(6, 6));
+            instance.MakeNewFrame(new Vector<int>(0, 20), new Vector<int>(6, 6));
+            instance.MakeNewFrame(new Vector<int>(20, 0), new Vector<int>(6,6));
+            instance.MakeNewFrame(new Vector<int>(20, 20), new Vector<int>(6,6));
 
-            frame.AddObject(new TLabel("Collider: 0", new Vector<int>(0, 0)));
-            frame1.AddObject(new TLabel("Collider: 1", new Vector<int>(0, 0)));
-            frame2.AddObject(new TLabel("Collider: 2", new Vector<int>(0, 0)));
-            frame3.AddObject(new TLabel("Collider: 3", new Vector<int>(0, 0)));
-
-            instance.Frames.Add(frame);
-            instance.Frames.Add(frame1);
-            instance.Frames.Add(frame2);
-            instance.Frames.Add(frame3);
+            instance.Frames[0].AddObject(new TLabel("Collider: 0", new Vector<int>(0, 0)));
+            instance.Frames[0].AddObject(new TButton("TestButton", new Vector<int>(0, 3)));
+            instance.Frames[1].AddObject(new TLabel("Collider: 1", new Vector<int>(0, 0)));
+            instance.Frames[2].AddObject(new TLabel("Collider: 2", new Vector<int>(0, 0)));
+            instance.Frames[3].AddObject(new TLabel("Collider: 3", new Vector<int>(0, 0)));
 
             instance.Init();
-
-            while (true)
+            for(int i = 1; i < 100000000; i++)
             {
-                instance.Frames[0].Location = instance.CursorPosition ?? new Vector<int>(1,1);
-                Thread.Sleep(10);
+                instance.FPS =  144%i;
+                Thread.Sleep(6);
             }
         }
     }
