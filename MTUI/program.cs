@@ -27,11 +27,6 @@ namespace MTUI
             instance.Frames[3].AddObject(new TLabel("Collider: 3", new Vector<int>(0, 0)));
 
             instance.Init();
-            for(int i = 1; i < 100000000; i++)
-            {
-                instance.FPS =  144%i;
-                Thread.Sleep(6);
-            }
         }
     }
 }
