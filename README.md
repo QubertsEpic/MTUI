@@ -1,4 +1,4 @@
-# MTUI
+# Matthew's TUI
 
 MTUI is a small project I've been working on for developing my own software, I challenged myself to write my own simple TUi framework.
 
